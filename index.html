@@ -4,22 +4,6 @@ layout: default
 
 <div class="home">
 
-{% assign categories = [howto] %}
-
-{% for c in categories %}
-  {% if site.meta_categories %}
-	{% for cat in site.meta_categories %}
-	  {% if cat.slug == c %}
-
-<span title="{{ cat.description }}">
-	<a href="{{ site.baseurl }}/category/{{ cat | slugize }}/" class="cat">{{ cat.name }}</a>
-</span>
-
-	  {% endif %}
-	{% endfor %}
-  {% endif %}
-{% endfor %}
-
   <h1 class="page-heading">Posts</h1>
 
   <ul class="post-list">
@@ -37,7 +21,4 @@ layout: default
       </li>
     {% endfor %}
   </ul>
-
-  <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></p>
-
 </div>

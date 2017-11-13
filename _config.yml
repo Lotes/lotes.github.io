@@ -1,3 +1,7 @@
-theme: jekyll-theme-cayman
+title: Lotes' lab
+description: This is my blog. There are many blogs, but this blog is mine.
+show_downloads: false
+google_analytics:
 exclude:
   - README.md
+  - index.md

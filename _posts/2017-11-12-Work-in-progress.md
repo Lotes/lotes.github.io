@@ -3,7 +3,7 @@ layout: post
 title: Work in progress
 ---
 Howdy strangers... my activity on Github is practically shrinked down to zero percent.
-But don't worry! I currently working on several private projects on Bitbucket :-).
+But don't worry! I am currently working on several private projects on Bitbucket :-).
 Have a little look on the project descriptions below ;-)...
 
 ## Project CQL
