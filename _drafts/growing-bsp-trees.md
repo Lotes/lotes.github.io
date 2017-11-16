@@ -22,4 +22,10 @@ The simplest growing command is <# INCLUDE("part.xlsx") #>. Imagine that "part.x
 
 Two cases, big difference. The way the Excel sheet is splitted and expanded, brought me to the idea of a BSP tree, where the leaves (the single rooms of the whole space) can grow.
 
-...
+## The data structure
+
+The structure consists of four concrete classes: two for horizontal and two for vertical cuts of an Excel sheet. One is the inner node (the cut) and the other is the leaf (the used cells).
+
+IMAGE
+
+Withou loss of generality I will examine three cases for vertcal cuts only: depth 0, depth 1 and depth 2. 
