@@ -150,6 +150,10 @@ The lesson learned in these cutting examples is, that I will expand the rows fir
 
 The structure consists of four concrete classes: two for horizontal and two for vertical cuts of an Excel sheet. One is the inner node (the cut) and the other is the leaf (the used cells).
 
+### Demo
+
+You can download the C# source [here](TODO).
+
 ### Example
 
 As example, let's use the cut table from above and transform it to a BSP tree:
@@ -195,6 +199,34 @@ So here are the public operations of the tree:
 * expand_range(handle, width, height)
 * annotate_cell(address, annotation)
 * get_cell(address): cell_information
+
+#### Initial state and constraints
+
+We are operating on a Excel sheet. So we can not expand to the left or to the top. Only to the right and to the bottom. So the structure is already filled with three nodes:
+
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td>
+
+| |&#x2702;|A|B|C|
+|-|-|-|-|-|
+|&#x2702;|&rArr;|&rArr;|&rArr;|&rArr;|
+|1|&dArr;|      |      |      |      |
+|2|&dArr;|      |      |      |      |
+|3|&dArr;|      |      |      |      |
+
+</td>
+<td>
+![Initial tree]({{"/assets/posts/growing-bsp-trees/initial-tree.png" | absolute_url}})
+</td>
+</tr>
+</table>
+
+`NULL` means `not addressable`.
+
+Take it as convention, that we always start the tree with these nodes. So, the first node we are addressing as **root will always be the node created through `H(A1:__)`**.
+
+Another convention (actually it is a constraint) is, that the tree has to be build from top to bottom and from left to the right. So, `A1, B1, D1, B2, C3` is allowed and `A1, C3, B1` is forbidden.
 
 #### Operation: make_range_expandable
 
