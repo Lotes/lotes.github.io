@@ -1,7 +1,16 @@
 title: Lotes' lab
 description: This is my blog. There are many blogs, but this blog is mine.
 show_downloads: false
-markdown: 'kramdown'
+markdown: redcarpet
+redcarpet:
+  extensions:
+    - no_intra_emphasis
+    - fenced_code_blocks
+    - autolink
+    - tables
+    - strikethrough
+    - superscript
+    - with_to_data
 google_analytics:
 exclude:
   - README.md
