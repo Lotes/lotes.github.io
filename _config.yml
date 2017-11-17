@@ -1,6 +1,7 @@
 title: Lotes' lab
 description: This is my blog. There are many blogs, but this blog is mine.
 show_downloads: false
+markdown: 'kramdown'
 google_analytics:
 exclude:
   - README.md
