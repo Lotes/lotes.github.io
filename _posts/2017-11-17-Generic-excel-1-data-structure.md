@@ -1,7 +1,8 @@
 ---
 layout: post
-title: Growing BSP trees in Excel
+title: Generic Excel I - Data structure
 ---
+
 Currently I have to fight with an idea of an Excel templating language. My goal is to provide features like variables, scopes, file inclusion, conditional templating and template loops.
 
 The user of this language places the template commands similiar to PHP by writing `<# command...; #>` into a cell. There are two types of commands: the growing ones and the not growing ones.
@@ -150,10 +151,6 @@ The lesson learned in these cutting examples is, that I will expand the rows fir
 
 The structure consists of four concrete classes: two for horizontal and two for vertical cuts of an Excel sheet. One is the inner node (the cut) and the other is the leaf (the used cells).
 
-### Demo
-
-You can download the C# source [here](TODO).
-
 ### Example
 
 As example, let's use the cut table from above and transform it to a BSP tree:
@@ -228,27 +225,6 @@ Take it as convention, that we always start the tree with these nodes. So, the f
 
 Another convention (actually it is a constraint) is, that the tree has to be build from top to bottom and from left to the right. So, `A1, B1, D1, B2, C3` is allowed and `A1, C3, B1` is forbidden.
 
-#### Operation: make_range_expandable
+### To be continued...
 
-```python
-make_range_expandable(range): range_handle {
-  if this is leaf:
-    if range not in bbox:
-      raise error
-    endif
-    replace this with (*1)
-    return this.handle
-  else:
-    if range in child1.bbox:
-      return child1.make_range_expandable(range)
-    else if range in child2.bbox:
-      return child2.make_range_expandable(range)
-    else:
-      raise error
-    endif
-  endif
-}
-```
-*1) IMAGE
-
-**Constraint**: Two cutting nodes MUST NEVER cross each other! (but one expander could be entirely in another one!)
+In the next posts I will show an implementation of this data structure...
