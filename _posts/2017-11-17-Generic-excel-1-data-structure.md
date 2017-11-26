@@ -1,7 +1,10 @@
----
+<---
 layout: post
 title: Generic Excel I - Data structure
 ---
+
+<script type="text/javascript" src="{{"/assets/js/d3.v4.min.js"|absolute_url}}"></script>
+<script type="text/javascript" src="{{"/assets/posts/growing-bsp-trees/script.js"|absolute_url}}"></script>
 
 Currently I have to fight with an idea of an Excel templating language. My goal is to provide features like variables, scopes, file inclusion, conditional templating and template loops.
 
@@ -9,34 +12,9 @@ The user of this language places the template commands similiar to PHP by writin
 
 The not growing type describes its content in one cell and generates content for only one cell. Example: <# CONCAT("Invoice ", name) #> would generate "Invoice XYZ", when name had the value "XYZ". One string, one cell.
 
-<table cellpadding="0" cellspacing="0" border="0">
-<tr>
-<td>
+![Non-expanding content]({{"/assets/posts/growing-bsp-trees/non-expanding.PNG"|absolute_url}})
 
-| |A|B|C|
-|-|-|-|-|
-|1| | | |
-|2| |<# CON... #>| |
-|3| | | |
-
-</td>
-<td>
-&rarr;
-</td>
-<td>
-
-| |A|B|C|
-|-|-|-|-|
-|1| | | |
-|2| |Invoice XYZ| |
-|3| | | |
-
-</td>
-</tr>
-</table>
-
-
-The simplest growing command is <# INCLUDE("part.xlsx") #>. Imagine that "part.xslx" is an Excel with 3 rows and 2 columns. One cell becomes to six cells - eaaasy... but how would you insert the new columns and rows? Assuming that the content always expands to the right and down, there are 2 ways:
+The simplest growing command is <# INCLUDE("part.xlsx") #>. Imagine that `part.xslx` is an Excel with 3 rows and 2 columns. One cell becomes to six cells - eaaasy... but how would you insert the new columns and rows? Assuming that the content always expands to the right and down, there are 2 ways:
 
 1. Expand rows, then columns.
 
@@ -47,101 +25,14 @@ The simplest growing command is <# INCLUDE("part.xlsx") #>. Imagine that "part.x
       * &epsilon; stands for new cells without content.
       * X stands for generated content.
 
-    <table cellpadding="0" cellspacing="0" border="0">
-    <tr>
-    <td>
-
-    | |A|B|C|D|
-    |-|-|-|-|-|
-    |1| | | | |
-    |2| |<# INCLUDE... #>|C2| |
-    |3| |B3|C3| |
-    |4| | | | |
-    |5| | | | |
-
-    </td>
-    <td>
-    1. push rows to the bottom<br/>&rarr;
-    </td>
-    <td>
-
-    | |A|B|C|D|
-    |-|-|-|-|-|
-    |1| | | | |
-    |2| |X|C2| |
-    |3|&epsilon;|X|&epsilon;|&epsilon;|
-    |4|&epsilon;|X|&epsilon;|&epsilon;|
-    |&#x2702;|&rArr;|&rArr;|&rArr;|&rArr;|
-    |5| |B3|C3| |
-
-    </td>
-    <td>
-    2. push columns to the right<br/>&rarr;
-    </td>
-    <td>
-
-    | |A|B|C|&#x2702;|D|E|
-    |-|-|-|-|-|-|-|
-    |1| | |&epsilon;|&dArr;| | |
-    |2| |X|X|&dArr;|C2||
-    |3|&epsilon;|X|X|&dArr;|&epsilon;|&epsilon;|
-    |4|&epsilon;|X|X|&dArr;|&epsilon;|&epsilon;|
-    |&#x2702;|&rArr;|&rArr;|&rArr;|&rArr;|&rArr;|&rArr;|
-    |5| |B3|C3| | | |
-
-    </td>
-    </tr>
-    </table>
-
+![Expanding content bottom then right]({{"/assets/posts/growing-bsp-trees/expanding-bottom-right.PNG"|absolute_url}})
 
 
 
 2. Expand columns, then rows.
 
-    <table cellpadding="0" cellspacing="0" border="0">
-    <tr>
-    <td>
 
-    | |A|B|C|D|
-    |-|-|-|-|-|
-    |1| | | | |
-    |2| |<# INCLUDE... #>|C2| |
-    |3| |B3|C3| |
-    |4| | | | |
-    |5| | | | |
-
-    </td>
-    <td>
-    1. push columns to the right<br/>&rarr;
-    </td>
-    <td>
-
-    | |A|B|C|&#x2702;|D|
-    |-|-|-|-|-|-|
-    |1| | |&epsilon;|&dArr;| |
-    |2| |X|X|&dArr;|C2|
-    |3| |B3|&epsilon;|&dArr;|C3|
-    |4| | |&epsilon;|&dArr;| |
-    |5| | |&epsilon;|&dArr;| |
-
-    </td>
-    <td>
-    3. push rows to the bottom<br/>&rarr;
-    </td>
-    <td>
-
-    | |A|B|C|&#x2702;|D|
-    |-|-|-|-|-|-|
-    |1| | |&epsilon;|&dArr;| |
-    |2| |X|X|&dArr;|C2|
-    |3|&epsilon;|X|X|&dArr;|C3|
-    |4|&epsilon;|X|X|&dArr;| |
-    |&#x2702;|&rArr;|&rArr;|&rArr;|&dArr;| |
-    |5| |B3|&epsilon;|&dArr;| |
-
-    </td>
-    </tr>
-    </table>
+![Expanding content, right then bottom]({{"/assets/posts/growing-bsp-trees/expanding-right-bottom.PNG"|absolute_url}})
 
 Two cases, big difference. The way the Excel sheet is splitted and expanded, brought me to the idea of a BSP tree, where the leaves (the single rooms of the whole space) can grow.
 
@@ -149,79 +40,49 @@ The lesson learned in these cutting examples is, that I will expand the rows fir
 
 ## The data structure
 
-The structure consists of four concrete classes: two for horizontal and two for vertical cuts of an Excel sheet. One is the inner node (the cut) and the other is the leaf (the used cells).
+The structure is a binary space partition tree whose leaves can grow.
 
 ### Example
 
-As example, let's use the cut table from above and transform it to a BSP tree:
+As example, let use the cut table from above and transform it to a BSP tree:
 
-<table cellpadding="0" cellspacing="0" border="0">
-<tr>
-<td>
-
-| |A|B|C|&#x2702;|D|E|
-|-|-|-|-|-|-|-|
-|1| | |&epsilon;|&dArr;| | |
-|2| |X|X|&dArr;|C2||
-|3|&epsilon;|X|X|&dArr;|&epsilon;|&epsilon;|
-|4|&epsilon;|X|X|&dArr;|&epsilon;|&epsilon;|
-|&#x2702;|&rArr;|&rArr;|&rArr;|&rArr;|&rArr;|&rArr;|
-|5| |B3|C3| | | |
-
-</td>
-<td>
-&rarr;
-</td>
-<td>
-![Cutting tree]({{"/assets/posts/growing-bsp-trees/cutting-tree.png" | absolute_url}})
-</td>
-</tr>
-</table>
+<div id="cut"></div>
+<script type="text/javascript">
+  var tree = new Tree();
+  tree.MakeExpandable(new Range(2, 2, 3, 4));
+  embedTree(tree, '#cut', 10, 10);
+</script>
 
 Legend:
 
 * Prefix `H` stands for `horizontal node`. These nodes are black.
 * Prefix `V` stands for `vertical node`. These nodes are white.
 * Inner node are `cutters`. Their suffix describes a row (for horizontal nodes) or a column (for vertical nodes).
-* Leaf nodes describe the Excel range that is defined in parenthesis. `A1:C4` selects 3 times 4 cells. `A5:__` selects everything under row 4 (`_` stands for infinity).
+* Leaf nodes describe the Excel range that is defined in parenthesis.
+* `+` stands for positive infinity and `-` for negative infinity.
 
 ### Operations
 
 #### Use case
-The user is confronted with following situation: He has an Excel template with several sheets. Each sheet has a set of cells with or without expanding template commands. The user can identify these cells. Now, he would like to build up the tree by *annotating style and content information* and by *inserting expanding cells*. After filling the tree with the sheet information, every cell commands have to be evaluated. This is the point where certain *cells get expanded*. After every expansion has fulfilled, the user wants *to query*, where every original cell has landed in the resulting state of a sheet (to copy styles and content).
+The user is confronted with following situation: He has an Excel template with several sheets. Each sheet has a set of cells with or without expanding template commands. The user can identify these cells. Now, he would like to build up the tree by *inserting expanding cells*. After filling the tree with these information, every cell commands have to be evaluated. This is the point where certain *cells get expanded*. After every expansion has fulfilled, the user wants *to query*, where every original cell has landed in the resulting state of a sheet (to copy styles and content).
 
 So here are the public operations of the tree:
 
-* make_range_expandable(range): range_handle
-* expand_range(handle, width, height)
-* annotate_cell(address, annotation)
-* get_cell(address): cell_information
+* `make_range_expandable(range): range_handle`
+* `expand_range(range_handle, width, height)`
+* `query_cell(address): (address, bool)`, where the bool says wether only the style has to be copied or also the content
 
 #### Initial state and constraints
 
 We are operating on a Excel sheet. So we can not expand to the left or to the top. Only to the right and to the bottom. So the structure is already filled with three nodes:
 
-<table cellpadding="0" cellspacing="0" border="0">
-<tr>
-<td>
+<div id="here"></div>
+<script type="text/javascript">
+  var tree = new Tree();
+  embedTree(tree, '#here', 10, 10);
+</script>
 
-| |&#x2702;|A|B|C|
-|-|-|-|-|-|
-|&#x2702;|&rArr;|&rArr;|&rArr;|&rArr;|
-|1|&dArr;|      |      |      |      |
-|2|&dArr;|      |      |      |      |
-|3|&dArr;|      |      |      |      |
-
-</td>
-<td>
-![Initial tree]({{"/assets/posts/growing-bsp-trees/initial-tree.png" | absolute_url}})
-</td>
-</tr>
-</table>
-
-`NULL` means `not addressable`.
-
-Take it as convention, that we always start the tree with these nodes. So, the first node we are addressing as **root will always be the node created through `H(A1:__)`**.
+Take it as convention, that we always start the tree with these nodes. So, the first node we are addressing as **root will always be the node created through `H(A1:++)`**.
 
 Another convention (actually it is a constraint) is, that the tree has to be build from top to bottom and from left to the right. So, `A1, B1, D1, B2, C3` is allowed and `A1, C3, B1` is forbidden.
 
