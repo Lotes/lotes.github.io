@@ -1,4 +1,4 @@
-<---
+---
 layout: post
 title: Generic Excel I - Data structure
 ---
