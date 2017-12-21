@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Generic Excel I - Data structure
+title: Generic Excel data structure
 ---
 
 <script type="text/javascript" src="{{"/assets/js/d3.v4.min.js"|absolute_url}}"></script>
@@ -81,11 +81,3 @@ We are operating on a Excel sheet. So we can not expand to the left or to the to
   var tree = new Tree();
   embedTree(tree, '#here', 10, 10);
 </script>
-
-Take it as convention, that we always start the tree with these nodes. So, the first node we are addressing as **root will always be the node created through `H(A1:++)`**.
-
-Another convention (actually it is a constraint) is, that the tree has to be build from top to bottom and from left to the right. So, `A1, B1, D1, B2, C3` is allowed and `A1, C3, B1` is forbidden.
-
-### To be continued...
-
-In the next posts I will show an implementation of this data structure...

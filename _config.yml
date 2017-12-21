@@ -6,3 +6,6 @@ google_analytics:
 exclude:
   - README.md
   - index.md
+kramdown:
+  input: GFM
+  hard_wrap: false
