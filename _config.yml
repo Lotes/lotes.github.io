@@ -9,3 +9,4 @@ exclude:
 kramdown:
   input: GFM
   hard_wrap: false
+theme: jekyll-theme-minimal
