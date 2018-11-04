@@ -1,5 +1,12 @@
 ---
 layout: post
-title: New project: Meta-modeling with MySQL
+title: Meta-modeling with MySQL
 ---
-https://github.com/Lotes/mysql-meta-modeling
+
+I am currently working on an own MySql tool.
+
+My goal is modeling tool generating a whole database.
+
+I am currently stucked on a Sql tool scanning for dependencies to determine the right execution order.
+
+[View project](https://github.com/Lotes/mysql-meta-modeling)
