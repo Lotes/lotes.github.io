@@ -1,4 +1,4 @@
 ---
   layout: post
-  title: Alles muss raus: Meine ollen Bücher
---- 
+  title: Meine ollen Bücher
+---
