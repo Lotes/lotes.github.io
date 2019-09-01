@@ -1,8 +1,8 @@
 ---
 layout: post
-title: XSLT meets ANTLR
+title: ANTLR meets XML
 ---
 Currently I am playing around with XSL transformations.
-http://www.lotes-lab.de/xsl-automata/
+[Link](https://github.com/Lotes/antlr-meets-xml)
 
 The ultimative goal is a target for ANTLR.
